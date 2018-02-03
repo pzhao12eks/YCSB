@@ -1,7 +1,3 @@
-addons:
-  hostname: myshorthost
-  hosts:
-  - myshorthost
 before_cache:
 - rm -rf $HOME/CACHE; find $TRAVIS_BUILD_DIR -name .starts | while read line; do du
   -sh $line;         DIR=$(dirname $HOME/CACHE$line); mkdir -p $DIR; cp -r $line $DIR;
@@ -31,14 +27,13 @@ jdk:
 - oraclejdk8
 language: java
 script:
-- touch NOW
+- touch /tmp/NOW
 - echo GIBSTUDYSTART $(date)
 - mvn test -q
 - echo GIBSTUDYEND $(date)
 - cd $TRAVIS_BUILD_DIR
-- if [ "$TRAVIS_OS_NAME" == "osx" ];        then echo TESTNUM $(find . -name TEST-*.xml
-  -newer NOW | wc -l);        else echo TESTNUM $(find -name TEST-*.xml -newer NOW
-  | wc -l);        fi
+- echo TESTNUM $(find . -name TEST-*.xml -newer /tmp/NOW | wc -l)
 services:
 - mongodb
-sudo: true
+- riak
+sudo: false
